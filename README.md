@@ -1,10 +1,12 @@
+Release to fix [issue #44](https://github.com/DaSpawn/xlsx-stream-reader/issues/44) in original project.
+
 # xlsx-stream-reader
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ======
 
-Memory efficinet minimalist streaming XLSX reader that can handle piped 
+Memory efficinet minimalist streaming XLSX reader that can handle piped
 streams as input. Events are emmited while reading the stream.
 
 Example
@@ -35,7 +37,7 @@ workBookReader.on('error', function (error) {
     throw(error);
 });
 workBookReader.on('sharedStrings', function () {
-    // do not need to do anything with these, 
+    // do not need to do anything with these,
     // cached and used when processing worksheets
     console.log(workBookReader.workBookSharedStrings);
 });
@@ -50,7 +52,7 @@ workBookReader.on('worksheet', function (workSheetReader) {
     if (workSheetReader.id > 1){
         // we only want first sheet
         workSheetReader.skip();
-        return; 
+        return;
     }
     // print worksheet name
     console.log(workSheetReader.name);
@@ -86,18 +88,18 @@ fs.createReadStream(fileName).pipe(workBookReader);
 Beta Warning
 
 -------
-This module is currently in use on a live internal business system for product 
-management. That being said this should still be considered beta. More usage 
-and input from users will be needed due to the numerous differences/incompatibilities/flukes 
+This module is currently in use on a live internal business system for product
+management. That being said this should still be considered beta. More usage
+and input from users will be needed due to the numerous differences/incompatibilities/flukes
 I have already run into with XLSX files.
 
 Limitations
 
 -------
 The row reader currently returns stored values for formulas (these are normally available)
-and does not calculate the formula itself. As time permits the row handler will be more capable 
+and does not calculate the formula itself. As time permits the row handler will be more capable
 but was enough for currrent purposes (loading values from large worksheets fast)
- 
+
 Inspiration
 
 -----------
@@ -115,7 +117,7 @@ receieved too fast but this has not been tested
 
 Events can potentially (even though I have not seen it) be receieved out of order,
 if you receive a worksheet end event while still receieving rows be sure to make sure
-your number of rows receieved equals the `workSheetReader.rowCount` 
+your number of rows receieved equals the `workSheetReader.rowCount`
 
 Theoretically you could process an excel sheet as it is being uploaded, depending
 on the sheet type, but untried (I encountered some XLSX files that have a different
@@ -139,7 +141,7 @@ can `pipe()` your input stream into the reader to begin processing
 
 * `error` {Error Object}
 
-Emitted if there was an error in processing (may not catch all errors, 
+Emitted if there was an error in processing (may not catch all errors,
 some may be thrown depending on where the error happened)
 
 #### Event: 'end'
@@ -148,7 +150,7 @@ Emmitted once the XLSX zip parser has closed and all sheets have been processed
 
 #### Event: 'sharedStrings'
 
-After the workbook shared strings have been parsed this event is emmited. Shared strings 
+After the workbook shared strings have been parsed this event is emmited. Shared strings
 are available via array `workBookReader.workBookSharedStrings`.
 
 #### Event: 'styles'
@@ -160,8 +162,8 @@ via array `workBookReader.workBookStyles`
 
 * `workSheetReader` {Object} XlsxStreamReaderWorkSheet object
 
-Emmitted when a worksheet is reached. The sheet number is availble via 
-{Number} `workSheetReader.id`. You can either process or skip at this point, 
+Emmitted when a worksheet is reached. The sheet number is availble via
+{Number} `workSheetReader.id`. You can either process or skip at this point,
 but you must do one for the processing to the next sheet to continue/finish.
 
 Once event is recieved you can attach worksheet on handlers (end, row) then you
@@ -170,15 +172,15 @@ want to skip entirely, you would `workSheetReader.skip()` without attaching any 
 
 #### Worksheet Event: 'end'
 
-Emmitted once the end of the worksheet has been reached. The row count is 
+Emmitted once the end of the worksheet has been reached. The row count is
 available via {Number} `workSheetReader.rowCount`
 
 #### Worksheet Event: 'row'
 
 * `row` {Object} Row object
 
-Emmitted on every row encountered in the worksheet. for more details on what 
-is in the row object attributes, see the [Row class][msdnRows] on MSDN.  
+Emmitted on every row encountered in the worksheet. for more details on what
+is in the row object attributes, see the [Row class][msdnRows] on MSDN.
 
 For example:
 
